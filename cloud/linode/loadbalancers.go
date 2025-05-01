@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"reflect"
@@ -329,9 +330,9 @@ func (l *loadbalancers) updateNodeBalancer(
 	// Check for IPv4 annotation change
 	if ipv4, ok := service.GetAnnotations()[annotations.AnnLinodeLoadBalancerIPv4]; ok && ipv4 != *nb.IPv4 {
 		// Log the error in the CCM's logfile
-		klog.Warningf("IPv4 annotation has changed for service (%s) from %s to %s, but NodeBalancer (%d) IP cannot be updated after creation", 
+		klog.Warningf("IPv4 annotation has changed for service (%s) from %s to %s, but NodeBalancer (%d) IP cannot be updated after creation",
 			getServiceNn(service), *nb.IPv4, ipv4, nb.ID)
-		
+
 		// Issue a k8s cluster event warning
 		l.createIPChangeWarningEvent(ctx, service, nb, ipv4)
 	}
